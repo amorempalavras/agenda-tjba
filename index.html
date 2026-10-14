@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Agenda Desembargadores TJBA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: painel de controle — resumo e filtros no topo fixo, depois fichas de gabinete em grade de 1–2 colunas */
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --ink:#18212B; --muted:#5A6672; --line:#DCE1E6;
+  --accent:#1C4E73; --accent-soft:#E3ECF3;
+  --s-pend:#8A949E; --s-tent:#B7791F; --s-agen:#2B6CB0; --s-feito:#2F7D4F;
+  --s-pend-bg:#EEF0F2; --s-tent-bg:#FBF1DF; --s-agen-bg:#E4EEF9; --s-feito-bg:#E2F2E8;
+  --f-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171D; --surface:#1A2129; --ink:#E6EAEE; --muted:#9AA6B2; --line:#2C3640;
+  --accent:#7FB2DB; --accent-soft:#1E3142;
+  --s-pend:#8F99A3; --s-tent:#E0A848; --s-agen:#73A9E6; --s-feito:#6CC08F;
+  --s-pend-bg:#242C35; --s-tent-bg:#3A2E18; --s-agen-bg:#1C2F45; --s-feito-bg:#1B3526;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171D; --surface:#1A2129; --ink:#E6EAEE; --muted:#9AA6B2; --line:#2C3640;
+  --accent:#7FB2DB; --accent-soft:#1E3142;
+  --s-pend:#8F99A3; --s-tent:#E0A848; --s-agen:#73A9E6; --s-feito:#6CC08F;
+  --s-pend-bg:#242C35; --s-tent-bg:#3A2E18; --s-agen-bg:#1C2F45; --s-feito-bg:#1B3526;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+h1{font-family:var(--f-display);font-size:1.75rem;line-height:1.15;margin:0;text-wrap:balance;font-weight:700}
+.sub{color:var(--muted);margin:4px 0 0;max-width:62ch}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:10px;margin-bottom:12px}
+.bar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--s-pend-bg)}
+.bar span{display:block;height:100%;transition:width .3s}
+.counts{display:flex;flex-wrap:wrap;gap:6px 18px;font-variant-numeric:tabular-nums}
+.counts b{font-size:1.05rem}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--line);margin-bottom:14px}
+input,select,textarea,button{font:inherit;color:var(--ink)}
+.controls input[type=search]{flex:1 1 220px;min-width:0}
+input[type=search],input[type=text],input[type=date],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+textarea{width:100%;resize:vertical;min-height:34px;box-sizing:border-box}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.me{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.me label{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.me input{width:150px}
+.notice{border:1px solid var(--line);background:var(--accent-soft);border-radius:8px;padding:10px 12px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--s-pend);border-radius:8px;padding:12px 14px;display:grid;gap:10px;min-width:0}
+.card[data-st=tentativa]{border-left-color:var(--s-tent)}
+.card[data-st=agendado]{border-left-color:var(--s-agen)}
+.card[data-st=feito]{border-left-color:var(--s-feito)}
+.card h2{font-family:var(--f-display);font-size:1.08rem;margin:0;line-height:1.25;font-weight:600;text-wrap:balance}
+.headrow{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.num{font-family:var(--f-mono);color:var(--muted);font-size:.78rem;padding-top:3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tag{font-size:.72rem;border-radius:999px;padding:2px 8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.consigo{border-color:var(--s-feito);color:var(--s-feito)}
+.info{display:grid;grid-template-columns:72px 1fr;gap:3px 10px;font-size:.88rem;min-width:0}
+.info dt{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.info dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.mono{font-family:var(--f-mono);font-size:.84rem}
+.copy{border:none;background:none;color:var(--accent);padding:0 4px;font-size:.78rem;text-decoration:underline;cursor:pointer}
+.note{font-size:.84rem;background:var(--accent-soft);border-radius:6px;padding:6px 8px}
+.track{display:grid;grid-template-columns:1fr 1fr 140px;gap:8px;border-top:1px dashed var(--line);padding-top:10px}
+.track label{display:grid;gap:3px;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:0}
+.track label.full{grid-column:1/-1}
+.track select,.track input{width:100%;box-sizing:border-box;text-transform:none;letter-spacing:0;font-size:.9rem}
+.st-sel{font-weight:600}
+.meta{font-size:.76rem;color:var(--muted);grid-column:1/-1}
+.empty{color:var(--muted);padding:24px;text-align:center}
+.toast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 12px;border-radius:6px;font-size:.85rem;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+a{color:var(--accent)}
+@media (max-width:560px){.track{grid-template-columns:1fr 1fr}.track label.date{grid-column:auto}h1{font-size:1.45rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>html{color-scheme:light}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">Quinto constitucional · Ministério Público</div>
+    <h1>Agenda de contatos com os Desembargadores do TJBA</h1>
+    <p class="sub">68 desembargadores da lista da equipe, com telefones, e-mails e salas dos gabinetes conforme a página de contatos do TJBA (out/2026). Marque o andamento de cada contato: todos da equipe veem as atualizações na hora. Preencha “Seu nome” para registrar quem fez cada alteração.</p>
+  </div>
+  <div class="me"><label for="meuNome">Seu nome</label><input type="text" id="meuNome" placeholder="Ex.: Fernando" maxlength="40"><button id="btnCsv" type="button">Exportar planilha (CSV)</button></div>
+</header>
+
+<div id="notice" class="notice" hidden></div>
+
+<section class="summary" aria-label="Resumo">
+  <div class="bar" id="bar"></div>
+  <div class="counts" id="counts"></div>
+</section>
+
+<div class="controls">
+  <input type="search" id="q" placeholder="Buscar nome, sala, e-mail, observação…" aria-label="Buscar">
+  <select id="fSt" aria-label="Filtrar por situação"><option value="">Todas as situações</option></select>
+  <select id="fLista" aria-label="Filtrar por lista">
+    <option value="">Ambas as listas</option><option value="consigo">Lista “Consigo”</option><option value="nao">Lista “Não consigo”</option>
+  </select>
+  <select id="fResp" aria-label="Filtrar por responsável"><option value="">Todos os responsáveis</option></select>
+  <select id="ord" aria-label="Ordenar">
+    <option value="orig">Ordem da lista</option><option value="az">Nome A–Z</option><option value="st">Por situação</option>
+  </select>
+</div>
+
+<div class="grid" id="grid"></div>
+<p class="empty" id="none" hidden>Nenhum desembargador corresponde aos filtros.</p>
+<datalist id="respList"></datalist>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const DATA = [{"id":"d01","n":"Maria da Purificação da Silva","l":"consigo","t":"3372-5113 / 5114 / 5116 / 5121","e":"gabinetempurificacao@tjba.jus.br","s":"Sala 207-N","o":""},{"id":"d02","n":"Carlos Roberto Santos Araújo","l":"consigo","t":"(71) 3372-5447 / 5448 / 5444","e":"gabdescarlosroberto@tjba.jus.br","s":"Sala 112-S","o":""},{"id":"d03","n":"Nágila Maria Sales Brito","l":"consigo","t":"(71) 3372-5504 / 5521 / 5523 / 5524 / 5525","e":"nbrito@tjba.jus.br","s":"Sala 232-S","o":""},{"id":"d04","n":"Ivone Bessa Ramos","l":"consigo","t":"(71) 3372-5275 / 5325 · Secretaria 3372-5140 · Recepção 3372-7704","e":"ibramos@tjba.jus.br","s":"Sala 109-N","o":""},{"id":"d05","n":"Maurício Kertzman Szporer","l":"consigo","t":"(71) 3372-5146 / 5460 / 5458 / 5439","e":"gabinetekertzman@tjba.jus.br","s":"Sala 106-N","o":""},{"id":"d06","n":"Lidivaldo Reaiche Raimundo Britto","l":"consigo","t":"(71) 3372-5684","e":"gabdeslrrbritto@tjba.jus.br","s":"Sala 122-S","o":""},{"id":"d07","n":"Abelardo Paulo da Mata Neto","l":"consigo","t":"(71) 3372-9640","e":"gabdes_abelardomatta@tjba.jus.br","s":"Sala 206-N","o":""},{"id":"d08","n":"Edson Ruy Bahiense Guimarães","l":"consigo","t":"Gabinete 3372-5148 · Recepção 3372-5149 · Assessoria 3372-5560","e":"gabdesedsonbahiense@tjba.jus.br","s":"Sala 116-N","o":""},{"id":"d09","n":"Marcelo Silva Britto","l":"consigo","t":"(71) 3372-5357 / 3372-5360","e":"gabdesmarcelobritto@tjba.jus.br","s":"Sala 128-S","o":""},{"id":"d10","n":"Maria do Socorro Santa Rosa de Carvalho Habib","l":"consigo","t":"(71) 3372-9637","e":"gabdesamshabib@tjba.jus.br","s":"Sala 202-N","o":""},{"id":"d11","n":"Paulo César Bandeira de Melo Jorge","l":"consigo","t":"(71) 3372-5271 / 5272 / 5273","e":"gabdespaulojorge@tjba.jus.br","s":"Sala 108","o":""},{"id":"d12","n":"Rolemberg José Araújo Costa","l":"consigo","t":"(71) 3372-5637 / 5609 / 5638","e":"des.rolembergcosta@tjba.jus.br","s":"Sala 132-S","o":""},{"id":"d13","n":"Marielza Brandão Franco","l":"consigo","t":"(71) 3372-5237","e":"gabdesamarielza@tjba.jus.br","s":"Sala 305-N","o":""},{"id":"d14","n":"Eduardo Afonso Maia Caricchio","l":"consigo","t":"(71) 3372-9634 / 3372-7794","e":"deseduardocaricchio@tjba.jus.br","s":"Sala 211","o":""},{"id":"d15","n":"Alberto Raimundo Gomes dos Santos","l":"consigo","t":"(71) 3372-5314 / 5316","e":"gabdesalbertorsantos@tjba.jus.br","s":"Sala 103-S","o":""},{"id":"d16","n":"Maria das Graças Guerra de Santana Hamilton","l":"consigo","t":"(71) 3372-5099","e":"gabdesamghamilton@tjba.jus.br","s":"Sala 131-S","o":""},{"id":"d17","n":"Andrea Paula Matos Rodrigues de Miranda","l":"consigo","t":"Recepção 3372-5479 · Secretaria 3372-5476 · Assessores 3372-5477","e":"gabdesaandreapaula@tjba.jus.br","s":"Sala 228-S","o":""},{"id":"d18","n":"Almir Pereira de Jesus","l":"consigo","t":"(71) 3372-5252 / 3372-5253","e":"gabdesapjesus@tjba.jus.br","s":"Sala 222-S","o":""},{"id":"d19","n":"Ana Conceição Barbuda Sanches Guimarães Ferreira","l":"consigo","t":"Recepção (71) 3372-5227","e":"gabanabarbuda@tjba.jus.br","s":"Sala 104-N","o":""},{"id":"d20","n":"Rilton Goes Ribeiro","l":"consigo","t":"Gabinete (71) 3372-5290","e":"gabdesrribeiro@tjba.jus.br","s":"Sala 302-N","o":""},{"id":"d21","n":"Manuel Carneiro Bahia de Araújo","l":"consigo","t":"Gabinete 3372-5681 · Assessores 3372-5676 / 5677 · Secretaria 3372-5674 / 5675","e":"gabdesmanuelbahia@tjba.jus.br","s":"Sala 303-N","o":""},{"id":"d22","n":"João Augusto Barbosa Dias","l":"nao","t":"","e":"","s":"","o":"Gabinete não localizado na lista de contatos do TJBA — pedir ramal à Central (71) 3372-5000 ou confirmar nome."},{"id":"d23","n":"José Edivaldo Rocha Rotondano","l":"nao","t":"(71) 3372-5647 · Chefia de Gab. da Presidência 3372-5059 / 5060","e":"gabdesjoseedivaldo@tjba.jus.br","s":"Sala 113-N","o":"Presidente do TJBA (biênio 2026–2028). Chefia de gabinete da Presidência: cgpres@tjba.jus.br"},{"id":"d24","n":"Josevando Souza Andrade","l":"nao","t":"(71) 3372-5184 / 5185 / 5186 / 5187 · 1ª Vice: 3372-5110 / 5112","e":"gabdesjosevando@tjba.jus.br","s":"Sala 206-S","o":"1º Vice-Presidente (2026–2028). 1ª Vice: 1vicepresidencia@tjba.jus.br, sala 324-S"},{"id":"d25","n":"Mário Augusto Albiani Alves Júnior","l":"nao","t":"Recepção 3372-9663 · Secretaria 3372-9630 · 2ª Vice: 3372-5648 / 5154 / 5198","e":"maajunior@tjba.jus.br","s":"Sala 204-N","o":"2º Vice-Presidente (2026–2028). 2ª Vice: 2vicepresidencia@tjba.jus.br, sala 320-S"},{"id":"d26","n":"Emilio Salomão Pinto Resedá","l":"nao","t":"Recepção 3372-5491 / 5211 · Assessores 3372-5222","e":"gabdesemiliosalomao@tjba.jus.br","s":"Sala 209-N","o":"Corregedor-Geral da Justiça (2026–2028)"},{"id":"d27","n":"Pilar Celia Tobio de Claro","l":"nao","t":"Recepção 3372-5200 · Secretaria 3372-5496","e":"gabdesapilarcelia@tjba.jus.br","s":"Sala 134-S","o":"Corregedora-Geral do Foro Extrajudicial (2026–2028)"},{"id":"d28","n":"Dinalva Gomes Laranjeira Pimentel","l":"nao","t":"Recepção 3372-5670 · Secretaria 3372-5302 · Assessores 3372-5300","e":"gabdesadinalvagomes@tjba.jus.br","s":"Sala 205-S","o":""},{"id":"d29","n":"Maria do Socorro Barreto Santiago","l":"nao","t":"(71) 3372-5242 / 5243","e":"gabdesamdosbsantiago@tjba.jus.br","s":"Sala 114-N","o":""},{"id":"d30","n":"Rosita Falcão de Almeida Maia","l":"nao","t":"(71) 3372-5244 / 5246 / 5247 / 5248","e":"gabdesarositafalcao@tjba.jus.br","s":"Sala 133-S","o":"No site o e-mail aparece como “gabdesarositafalcão” (com acento); use a versão sem acento."},{"id":"d31","n":"José Cícero Landin Neto","l":"nao","t":"Recepção 3372-5574 · Secretaria 3372-5576 · Assessores 3372-5578","e":"gabdesjosecicero@tjba.jus.br","s":"Sala 114-S","o":""},{"id":"d32","n":"Nilson Soares Castelo Branco","l":"nao","t":"(71) 3372-5230 / 5234 / 5335","e":"gabdesnilsonsoares@tjba.jus.br","s":"Sala 127-S","o":""},{"id":"d33","n":"Cynthia Maria Pina Resende","l":"nao","t":"Recepção 3372-5288 · Secretaria 3372-5287 · Assessores 3372-5286","e":"gabdesacynthiamaria@tjba.jus.br","s":"Sala 113-S","o":""},{"id":"d34","n":"Inez Maria Brito Santos Miranda","l":"nao","t":"Recepção 3372-5356 · Secretaria 3372-7701 · Gabinete 3372-5465","e":"gabdesainezmaria@tjba.jus.br","s":"Sala 103-N","o":""},{"id":"d35","n":"Gardênia Pereira Duarte","l":"nao","t":"(71) 3372-5510 / 5511 / 5509 / 5507","e":"gabdesagardenia@tjba.jus.br","s":"Sala 219-S","o":""},{"id":"d36","n":"José Alfredo Cerqueira da Silva","l":"nao","t":"Recepção (71) 3372-5261 / 5100","e":"gabdesjosealfredo@tjba.jus.br","s":"Sala 107-N","o":""},{"id":"d37","n":"Pedro Augusto Costa Guerra","l":"nao","t":"(71) 3372-5664 / 3372-5042","e":"gabdespedroguerra@tjba.jus.br","s":"Sala 105-N","o":""},{"id":"d38","n":"Lisbete Maria Teixeira Almeida Cézar Santos","l":"nao","t":"Recepção 3372-5220 · Secretaria 3372-5130","e":"gabdesalisbetemaria@tjba.jus.br","s":"Sala 213-N","o":""},{"id":"d39","n":"Edmilson Jatahy Fonseca Júnior","l":"nao","t":"(71) 3372-5280","e":"gab.des.jatahyjunior@tjba.jus.br","s":"Sala 221-S","o":""},{"id":"d40","n":"Roberto Maynard Frank","l":"nao","t":"Recepção 3372-7757 · Secretaria 3372-7756 · Assessores 3372-7759","e":"gabdesrobertomaynard@tjba.jus.br","s":"Sala 231-S","o":""},{"id":"d41","n":"João Bosco de Oliveira Seixas","l":"nao","t":"(71) 3372-9612","e":"gabdesjoaobosco@tjba.jus.br","s":"Sala 115-N","o":""},{"id":"d42","n":"Rita de Cássia Machado Magalhães","l":"nao","t":"Gabinete 3372-7784 · Secretaria 3372-7737 · Assessoria 3372-7723","e":"gabdesaritamachado@tjba.jus.br","s":"Sala 233-S","o":""},{"id":"d43","n":"Maria de Lourdes Pinho Medauar","l":"nao","t":"(71) 3372-7762 / 9615","e":"gabdesamdelpmedauar@tjba.jus.br","s":"Sala 309-N","o":""},{"id":"d44","n":"Carmem Lúcia Santos Pinheiro","l":"nao","t":"(71) 3372-5293 / 5294 / 5295","e":"gabdesacarmemlucia@tjba.jus.br","s":"Sala 118-N","o":""},{"id":"d45","n":"Baltazar Miranda Saraiva","l":"nao","t":"(71) 3372-9624 / 9626 / 9627","e":"gabdesbmsaraiva@tjba.jus.br","s":"Sala 105-S","o":""},{"id":"d46","n":"Raimundo Sérgio Sales Cafezeiro","l":"nao","t":"(71) 3372-9660 / 9662 / 7790 / 9658","e":"des.sergiocafezeiro@tjba.jus.br","s":"Sala 201-N","o":""},{"id":"d47","n":"Júlio Cezar Lemos Travessa","l":"nao","t":"Gabinete 3372-9648 · Secretaria 3372-9650 · Assessores 3372-9649","e":"gabdes.juliotravessa@tjba.jus.br","s":"Sala 203-S","o":""},{"id":"d48","n":"Maria de Fátima Silva Carvalho","l":"nao","t":"(71) 3372-9644 / 9643","e":"gabdesamariadefatima@tjba.jus.br","s":"Sala 203-N","o":""},{"id":"d49","n":"Soraya Moradillo Pinto","l":"nao","t":"Secretaria (71) 3372-9673","e":"gabdesasmoradillo@tjba.jus.br","s":"Sala 210-N","o":""},{"id":"d50","n":"Aracy Lima Borges","l":"nao","t":"(71) 3372-9629 / 9646 / 7792","e":"gabdesaaracyborges@tjba.jus.br","s":"Sala 212-N","o":""},{"id":"d51","n":"Antônio Cunha Cavalcanti","l":"nao","t":"(71) 3372-9676","e":"gdesaccavalcanti@tjba.jus.br","s":"","o":""},{"id":"d52","n":"José Soares Ferreira Aras Neto","l":"nao","t":"(71) 3372-5606 / 5602 · Celular (71) 99909-2645","e":"gabdesjosearas@tjba.jus.br","s":"Sala 211-N","o":""},{"id":"d53","n":"Paulo Alberto Nunes Chenaud","l":"nao","t":"(71) 3372-5584","e":"gabdespaulochenaud@tjba.jus.br","s":"Sala 204-S","o":""},{"id":"d54","n":"Geder Luiz Rocha Gomes","l":"nao","t":"Secretaria (71) 3372-5570","e":"gabdesgedergomes@tjba.jus.br","s":"Sala 307-N","o":""},{"id":"d55","n":"José Jorge Lopes Barretto da Silva","l":"nao","t":"Secretaria (71) 3372-5424 / 5432","e":"gabdesjorgebarretto@tjba.jus.br","s":"Sala 311-N","o":""},{"id":"d56","n":"Ângelo Jeronimo e Silva Vita","l":"nao","t":"Secretaria 3372-5547 · Assessoria 3372-5545","e":"gabdesangelovita@tjba.jus.br","s":"Sala 220-S","o":""},{"id":"d57","n":"Cássio José Barbosa Miranda","l":"nao","t":"(71) 3372-9608 / 9609","e":"gabdescjmiranda@tjba.jus.br","s":"Sala 227-S","o":""},{"id":"d58","n":"Antônio Adonias Aguiar Bastos","l":"nao","t":"(71) 3372-5471 / 3372-5322","e":"gabdesadonias@tjba.jus.br","s":"Sala 104-S","o":""},{"id":"d59","n":"Cláudio Cesare Braga Pereira","l":"nao","t":"(71) 3372-7708","e":"gabdesclaudiocesare@tjba.jus.br","s":"Sala 301-N","o":""},{"id":"d60","n":"Antônio Maron Agle Filho","l":"nao","t":"(71) 3372-5498","e":"gabdesmaronagle@tjba.jus.br","s":"Sala 121-S","o":""},{"id":"d61","n":"Renato Ribeiro Marques da Costa","l":"nao","t":"(71) 3372-5324 / 5307","e":"gabdesrenatomarques@tjba.jus.br","s":"Sala 111-N","o":""},{"id":"d62","n":"Ricardo Regis Dourado","l":"nao","t":"(71) 3372-5543","e":"gabdesricardodourado@tjba.jus.br","s":"Sala 214-N","o":""},{"id":"d63","n":"Nivaldo dos Santos Aquino","l":"nao","t":"(71) 3372-9618 / 9617","e":"gabdesnivaldoaquino@tjba.jus.br","s":"Sala 106-S","o":""},{"id":"d64","n":"Raimundo Nonato Borges Braga","l":"nao","t":"(71) 3372-5202 / 5204","e":"gabdesraimundobraga@tjba.jus.br","s":"Sala 111-S","o":""},{"id":"d65","n":"Graça Marina Vieira Furtado","l":"nao","t":"(71) 3372-5482 / 5483 / 5131","e":"gab-desa-gmvf@tjba.jus.br","s":"Sala 213-S","o":""},{"id":"d66","n":"José Reginaldo Costa Rodrigues Nogueira","l":"nao","t":"(71) 3372-7745 / 5536","e":"gabjosereginaldo@tjba.jus.br","s":"Sala 236-S","o":""},{"id":"d67","n":"Josefison Silva Oliveira","l":"nao","t":"Recepção 3372-5454 · Secretaria 3372-5453","e":"gabdesjosefisonsilva@tjba.jus.br","s":"Sala 119-S","o":"5ª Câmara Cível — promovido em 28/08/2026 (merecimento)"},{"id":"d68","n":"Márcia Denise Mineiro Sampaio Mascarenhas","l":"nao","t":"Recepção 3372-1803 · Secretaria 3372-5303 · Adm. 3372-5622","e":"gabdesamarciadenise@tjba.jus.br","s":"Sala 102-N","o":"3ª Câmara Cível — promovida em 28/08/2026 (antiguidade)"}];
+const ST = [
+  {k:"pendente",  t:"Não contatado",            c:"--s-pend"},
+  {k:"tentativa", t:"Tentativa sem retorno",    c:"--s-tent"},
+  {k:"agendado",  t:"Visita/reunião agendada",  c:"--s-agen"},
+  {k:"feito",     t:"Contato realizado",        c:"--s-feito"},
+];
+const stName = k => (ST.find(s=>s.k===k)||ST[0]).t;
+const state = {};           // id -> doc data
+let sb=null, canWrite=true;
+const SB_URL="https://rmlfilhyxuylifbclink.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtbGZpbGh5eHV5bGlmYmNsaW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMTE0MTcsImV4cCI6MjEwNzU4NzQxN30.dC3uZkYAXTLHYjgFHW2WqPPx80j5-OP05dHYHs3K8Kg";
+const myName=()=>($("#meuNome")||{}).value?.trim()||"";
+const $ = s => document.querySelector(s);
+const norm = s => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("on"),1800);}
+async function copyText(txt){try{await navigator.clipboard.writeText(txt);toast("Copiado: "+txt);}catch(e){toast("Selecione e copie: "+txt);}}
+
+// ---------- build cards once ----------
+const grid=$("#grid"); const cards={};
+ST.forEach(s=>{const o=document.createElement("option");o.value=s.k;o.textContent=s.t;$("#fSt").append(o);});
+DATA.forEach((d,i)=>{
+  d.i=i;
+  const el=document.createElement("article"); el.className="card"; el.dataset.st="pendente";
+  el.innerHTML=`
+   <div class="headrow"><div style="min-width:0">
+     <h2></h2>
+     <div class="tags"><span class="tag lista"></span><span class="tag stt"></span></div>
+   </div><span class="num"></span></div>
+   <dl class="info">
+     <dt>Telefone</dt><dd class="mono tel"></dd>
+     <dt>E-mail</dt><dd class="mail"></dd>
+     <dt>Gabinete</dt><dd class="sala"></dd>
+   </dl>
+   <div class="note" hidden></div>
+   <div class="track">
+     <label>Situação<select class="st-sel" id="st-${d.id}"></select></label>
+     <label>Responsável<input type="text" id="resp-${d.id}" list="respList" placeholder="Quem cuida"></label>
+     <label class="date">Data<input type="date" id="dt-${d.id}"></label>
+     <label class="full">Observações<textarea id="obs-${d.id}" rows="1" placeholder="Ex.: falei com a chefe de gabinete; retornar dia 20"></textarea></label>
+     <div class="meta"></div>
+   </div>`;
+  el.querySelector("h2").textContent="Des. "+d.n;
+  el.querySelector(".num").textContent=String(i+1).padStart(2,"0");
+  const lt=el.querySelector(".lista"); lt.textContent= d.l==="consigo"?"Lista: Consigo":"Lista: Não consigo"; if(d.l==="consigo") lt.classList.add("consigo");
+  el.querySelector(".tel").textContent=d.t||"—";
+  const mail=el.querySelector(".mail");
+  if(d.e){const sp=document.createElement("span");sp.className="mono";sp.textContent=d.e;const b=document.createElement("button");b.className="copy";b.type="button";b.textContent="copiar";b.onclick=()=>copyText(d.e);mail.append(sp,b);} else mail.textContent="—";
+  const sala=el.querySelector(".sala");
+  sala.textContent=(d.s?d.s+" · ":"")+"Sede do TJBA, 5ª Av. do CAB, 560 ";
+  const a=document.createElement("a");a.href="https://www.tjba.jus.br/contatos/?s="+encodeURIComponent(d.n.split(" ").slice(0,2).join(" "));a.target="_blank";a.rel="noopener";a.textContent="ver no TJBA";sala.append(a);
+  if(d.o){const n=el.querySelector(".note");n.hidden=false;n.textContent=d.o;}
+  const sel=el.querySelector("select");ST.forEach(s=>{const o=document.createElement("option");o.value=s.k;o.textContent=s.t;sel.append(o);});
+  // events
+  sel.addEventListener("change",()=>save(d.id,{status:sel.value}));
+  const dt=el.querySelector('input[type=date]'); dt.addEventListener("change",()=>save(d.id,{data:dt.value}));
+  const resp=el.querySelector('input[type=text]'); resp.addEventListener("change",()=>save(d.id,{resp:resp.value.trim()}));
+  const obs=el.querySelector("textarea"); obs.addEventListener("change",()=>save(d.id,{obs:obs.value.trim()}));
+  obs.addEventListener("input",()=>{obs.style.height="auto";obs.style.height=obs.scrollHeight+"px";});
+  cards[d.id]=el; grid.append(el);
+});
+
+// ---------- saving ----------
+const queue={}; // per-doc serialized writes
+async function save(id,patch){
+  if(!sb){toast("Sem conexão com o banco de dados");return;}
+  if(!myName()){const n=$("#meuNome");n.focus();toast("Preencha “Seu nome” no topo antes de marcar");}
+  const body={status:"pendente",resp:null,data:null,obs:null,...(state[id]||{}),...patch,id,por:myName()||null,em:new Date().toISOString()};
+  if(body.data==="")body.data=null;
+  state[id]=body; paint(id); summary(); applyFilters();
+  queue[id]=(queue[id]||Promise.resolve()).then(async()=>{
+    const {error}=await sb.from("contatos").upsert({id,status:body.status,resp:body.resp||null,data:body.data,obs:body.obs||null,por:body.por,em:body.em});
+    if(error)throw error; toast("Salvo");
+  }).catch(e=>{console.error(e);toast("Não foi possível salvar. Verifique a internet e tente de novo.");});
+}
+function lockInputs(){document.querySelectorAll(".track select,.track input,.track textarea").forEach(x=>x.disabled=true);}
+function showNotice(t){const n=$("#notice");n.textContent=t;n.hidden=false;}
+
+// ---------- painting ----------
+function fmtWhen(iso){try{const d=new Date(iso);return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});}catch(e){return"";}}
+function fmtDate(s){if(!s)return"";const[y,m,d]=s.split("-");return `${d}/${m}/${y}`;}
+function paint(id){
+  const el=cards[id], s=state[id]||{}, st=s.status||"pendente";
+  el.dataset.st=st;
+  const tag=el.querySelector(".stt");tag.textContent=stName(st);tag.style.color=`var(${ST.find(x=>x.k===st).c})`;tag.style.borderColor=tag.style.color;
+  const act=document.activeElement;
+  const sel=el.querySelector("select"); if(act!==sel) sel.value=st;
+  const r=el.querySelector('input[type=text]'); if(act!==r) r.value=s.resp||"";
+  const dt=el.querySelector('input[type=date]'); if(act!==dt) dt.value=s.data||"";
+  const o=el.querySelector("textarea"); if(act!==o){o.value=s.obs||"";o.style.height="auto";if(o.value)o.style.height=o.scrollHeight+"px";}
+  const meta=el.querySelector(".meta");
+  if(s.em){meta.textContent=`Atualizado por ${s.por||"alguém da equipe"} em ${fmtWhen(s.em)}`;} else meta.textContent="";
+}
+function summary(){
+  const c={};ST.forEach(s=>c[s.k]=0);
+  DATA.forEach(d=>c[(state[d.id]||{}).status||"pendente"]++);
+  const bar=$("#bar");bar.innerHTML="";
+  ["feito","agendado","tentativa"].forEach(k=>{const sp=document.createElement("span");sp.style.width=(c[k]/DATA.length*100)+"%";sp.style.background=`var(${ST.find(x=>x.k===k).c})`;sp.title=stName(k)+": "+c[k];bar.append(sp);});
+  const ct=$("#counts");ct.innerHTML="";
+  ST.slice().reverse().forEach(s=>{const d=document.createElement("div");d.innerHTML=`<span class="dot" style="background:var(${s.c})"></span><b></b> <span></span>`;d.querySelector("b").textContent=c[s.k];d.querySelector("span:last-child").textContent=s.t.toLowerCase();ct.append(d);});
+  const tot=document.createElement("div");tot.style.color="var(--muted)";tot.textContent=`de ${DATA.length} desembargadores`;ct.append(tot);
+  // responsáveis
+  const names=[...new Set(DATA.map(d=>(state[d.id]||{}).resp).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt"));
+  const dl=$("#respList");dl.innerHTML="";names.forEach(n=>{const o=document.createElement("option");o.value=n;dl.append(o);});
+  const fr=$("#fResp"),cur=fr.value;fr.innerHTML='<option value="">Todos os responsáveis</option><option value="__none">Sem responsável</option>';
+  names.forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;fr.append(o);});fr.value=[...fr.options].some(o=>o.value===cur)?cur:"";
+}
+function applyFilters(){
+  const q=norm($("#q").value),fs=$("#fSt").value,fl=$("#fLista").value,fr=$("#fResp").value,ord=$("#ord").value;
+  let list=DATA.filter(d=>{const s=state[d.id]||{};
+    if(fs&&(s.status||"pendente")!==fs)return false;
+    if(fl&&d.l!==fl)return false;
+    if(fr==="__none"&&s.resp)return false;
+    if(fr&&fr!=="__none"&&s.resp!==fr)return false;
+    if(q&&!norm([d.n,d.t,d.e,d.s,d.o,s.resp,s.obs].join(" ")).includes(q))return false;
+    return true;});
+  const rank={pendente:0,tentativa:1,agendado:2,feito:3};
+  if(ord==="az")list.sort((a,b)=>a.n.localeCompare(b.n,"pt"));
+  else if(ord==="st")list.sort((a,b)=>rank[(state[a.id]||{}).status||"pendente"]-rank[(state[b.id]||{}).status||"pendente"]||a.i-b.i);
+  const show=new Set(list.map(d=>d.id));
+  DATA.forEach(d=>{cards[d.id].hidden=!show.has(d.id);});
+  list.forEach(d=>grid.append(cards[d.id]));
+  $("#none").hidden=list.length>0;
+}
+["#q","#fSt","#fLista","#fResp","#ord"].forEach(s=>$(s).addEventListener("input",applyFilters));
+try{const o=localStorage.getItem("ord");if(o)$("#ord").value=o;$("#ord").addEventListener("change",()=>{try{localStorage.setItem("ord",$("#ord").value)}catch(e){}});}catch(e){}
+DATA.forEach(d=>paint(d.id)); summary(); applyFilters();
+
+// ---------- CSV ----------
+function csv(){
+  const esc=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const rows=[["Nº","Desembargador(a)","Lista","Telefones","E-mail","Gabinete","Observação TJBA","Situação","Responsável","Data","Observações da equipe"]];
+  DATA.forEach((d,i)=>{const s=state[d.id]||{};rows.push([i+1,d.n,d.l==="consigo"?"Consigo":"Não consigo",d.t,d.e,d.s,d.o,stName(s.status||"pendente"),s.resp,fmtDate(s.data),s.obs]);});
+  return "﻿"+rows.map(r=>r.map(esc).join(";")).join("\r\n");
+}
+
+// ---------- nome local ----------
+try{$("#meuNome").value=localStorage.getItem("meuNome")||"";}catch(e){}
+$("#meuNome").addEventListener("change",()=>{try{localStorage.setItem("meuNome",myName())}catch(e){}});
+
+// ---------- CSV ----------
+$("#btnCsv").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv()],{type:"text/csv;charset=utf-8"}));a.download="agenda-desembargadores-tjba.csv";document.body.append(a);a.click();a.remove();};
+
+// ---------- Supabase ----------
+async function load(){
+  const {data,error}=await sb.from("contatos").select("*");
+  if(error){showNotice("Não foi possível carregar as marcações da equipe. Recarregue a página.");return;}
+  data.forEach(r=>{if(cards[r.id])state[r.id]=r;});
+  DATA.forEach(d=>paint(d.id)); summary(); applyFilters();
+}
+(async()=>{
+  if(!window.supabase){showNotice("Não foi possível carregar a conexão com o banco de dados. Verifique a internet e recarregue.");lockInputs();return;}
+  sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false}});
+  await load();
+  sb.channel("contatos").on("postgres_changes",{event:"*",schema:"public",table:"contatos"},p=>{
+    const r=p.new; if(r&&cards[r.id]){state[r.id]=r;paint(r.id);summary();applyFilters();}
+  }).subscribe();
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)load();});
+})();
+</script>
+
+</body>
+</html>
